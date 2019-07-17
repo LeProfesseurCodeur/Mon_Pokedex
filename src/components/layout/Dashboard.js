@@ -5,7 +5,7 @@ export default class Dashboard extends Component {
         return (
             <div className="row">
                 <div className="col">
-                    <PokemonList /> {/* Acceuil */}
+                    <PokemonList /> 
                 </div>
             </div>
         )
