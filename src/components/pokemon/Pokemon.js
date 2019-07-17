@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import Axios from 'axios';
 
-//Construction des différentes catégories pour les déterminer l'origine du Pokémon.
 const TYPE_COLORS = {
   bug: 'B1C12E',
   dark: '4F3A2D',
@@ -24,7 +23,7 @@ const TYPE_COLORS = {
 };
 
 export default class Pokemon extends Component {
-  state = { // state est l'endroit d'où proviennent les données. 
+  state = { 
     name: '',
     pokemonIndex: '',
     imageUrl: '',
@@ -53,19 +52,14 @@ export default class Pokemon extends Component {
   };
 
   async componentDidMount() {
-    const { pokemonIndex } = this.props.match.params; // const : permet de déclarer une constante disponible uniquement en lecture.
-    //A l’inverse de let, const a besoin d’être déclaré avec une valeur initiale.
-
-    // Pokemon info url
+    const { pokemonIndex } = this.props.match.params; 
     const pokemonUrl = `https://pokeapi.co/api/v2/pokemon/${pokemonIndex}/`; 
     const pokemonSpeciesUrl = `https://pokeapi.co/api/v2/pokemon-species/${pokemonIndex}/`;
-    
-    // Obtenir les informations sur les Pokemon
     const pokemonRes = await Axios.get(pokemonUrl);
     const name = pokemonRes.data.name;
     const imageUrl = pokemonRes.data.sprites.front_default;
 
-    let { hp, attack, defense, speed, specialAttack, specialDefense } = ''; // let = déclaration d'une variable
+    let { hp, attack, defense, speed, specialAttack, specialDefense } = ''; 
  
     pokemonRes.data.stats.map(stat => {
 
@@ -93,7 +87,6 @@ export default class Pokemon extends Component {
       }
     });
 
-    // Convert en poids... The + 0.0001 * 100 ) / 100 is for rounding to two decimal places :)
     const height = Math.round((pokemonRes.data.height * 0.328084 + 0.00001) * 100) / 100;
     const weight = Math.round((pokemonRes.data.weight * 0.220462 + 0.00001) * 100) / 100;
     const types = pokemonRes.data.types.map(type => type.type.name);
@@ -126,17 +119,15 @@ export default class Pokemon extends Component {
       })
       .join(', ');
 
-    // Obtention Pokemon description en fr. 
     await Axios.get(pokemonSpeciesUrl).then(res => {
       let description = '';
       res.data.flavor_text_entries.some(flavor => {
-        if (flavor.language.name === 'fr' /*langage description*/) { 
+        if (flavor.language.name === 'fr') { 
           description = flavor.flavor_text;
           return;
         }
       });
 
-      // barre sur le type 
       const femaleRate = res.data['gender_rate'];
       const genderRatioFemale = 12.5 * femaleRate;
       const genderRatioMale = 12.5 * (8 - femaleRate);
@@ -165,7 +156,6 @@ export default class Pokemon extends Component {
 
     });
 
-    // this.setState envoie une série de modifications à l’état local du composant. 
     this.setState({
       imageUrl,
       pokemonIndex,
@@ -187,7 +177,6 @@ export default class Pokemon extends Component {
     });
   }
 
-  // Partie affichage card en détaille
   render() {
     return (
       <div className="col">
@@ -213,7 +202,7 @@ export default class Pokemon extends Component {
                         .split(' ')
                         .map(s => s.charAt(0).toUpperCase() + s.substring(1))
                         .join(' ')}
-                    </span> /* affichage des type selon les pokemon avec couleur attribué */
+                    </span> 
                   ))}
                 </div>
               </div>
@@ -222,7 +211,7 @@ export default class Pokemon extends Component {
           <div className="card-body">
             <div className="row align-items-center">
               <div className=" col-md-3 ">
-                <img src={this.state.imageUrl} className="card-img-top rounded mx-auto mt-2"/> {/* Affichage Pokemon */}
+                <img src={this.state.imageUrl} className="card-img-top rounded mx-auto mt-2"/> 
               </div>
               <div className="col-md-9">
                 <h4 className="mx-auto">
@@ -231,7 +220,7 @@ export default class Pokemon extends Component {
                     .split(' ')
                     .map(s => s.charAt(0).toUpperCase() + s.substring(1))
                     .join(' ')}
-                </h4> {/* Ajout prénom Pokemon */}
+                </h4> 
                 <div className="row align-items-center">
                   <div className={`col-12 col-md-${this.state.statTitleWidth}`}>
                     HP
@@ -251,7 +240,7 @@ export default class Pokemon extends Component {
                       </div>
                     </div>
                   </div>
-                </div> {/* Ajout HP + barre progresse */}
+                </div> 
 
                 <div className="row align-items-center">
                   <div className={`col-12 col-md-${this.state.statTitleWidth}`}>
@@ -267,12 +256,12 @@ export default class Pokemon extends Component {
                         aria-valuenow="25"
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* Style barre progresse */}
+                      > 
                         <small>{this.state.stats.attack}</small> 
                       </div>
                     </div>
                   </div>
-                </div> {/* Ajout attack + barre progresse */}
+                </div> 
 
                 <div className="row align-items-center">
                   <div className={`col-12 col-md-${this.state.statTitleWidth}`}>
@@ -288,12 +277,12 @@ export default class Pokemon extends Component {
                         aria-valuenow="25"
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* Style barre progresse */}
+                      > 
                         <small>{this.state.stats.defense}</small>
                       </div>
                     </div>
                   </div>
-                </div> {/* Ajout défense + barre progresse */}
+                </div> 
 
                 <div className="row align-items-center">
                   <div className={`col-12 col-md-${this.state.statTitleWidth}`}>
@@ -309,12 +298,12 @@ export default class Pokemon extends Component {
                         aria-valuenow="25"
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* Style barre progresse */}
+                      > 
                         <small>{this.state.stats.speed}</small>
                       </div>
                     </div>
                   </div>
-                </div> {/* Ajout speed + barre progresse */}
+                </div> 
 
                 <div className="row align-items-center">
                   <div className={`col-12 col-md-${this.state.statTitleWidth}`}>
@@ -330,12 +319,12 @@ export default class Pokemon extends Component {
                         aria-valuenow={this.state.stats.specialAttack}
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* Style barre progresse */}
+                      > 
                         <small>{this.state.stats.specialAttack}</small>
                       </div>
                     </div>
                   </div>
-                </div> {/* Ajout sp attack + barre progresse */}
+                </div> 
 
                 <div className="row align-items-center">
                   <div className={`col-12 col-md-${this.state.statTitleWidth}`}>
@@ -351,21 +340,21 @@ export default class Pokemon extends Component {
                         aria-valuenow={this.state.stats.specialDefense}
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* Style barre progresse */}
+                      > 
                         <small>{this.state.stats.specialDefense}</small>
                       </div>
                     </div>
                   </div>
                 </div>
               </div>
-            </div> {/* Sp defense + barre progresse */}
+            </div> 
 
             <div className="row mt-1">
               <div className="col">
                 <p className="">{this.state.description}</p>
               </div>
             </div>
-          </div> {/* Description Pokemon */}
+          </div> 
 
           <hr />
           
@@ -378,19 +367,19 @@ export default class Pokemon extends Component {
                     <h6 className="float-right">Height:</h6>
                   </div>
                   <div className="col-6">
-                    <h6 className="float-left">{this.state.height} ft.</h6> {/* taille */}
+                    <h6 className="float-left">{this.state.height} ft.</h6> 
                   </div>
                   <div className="col-6">
                     <h6 className="float-right">Weight:</h6> 
                   </div>
                   <div className="col-6">
-                    <h6 className="float-left">{this.state.weight} lbs</h6> {/* Poids */}
+                    <h6 className="float-left">{this.state.weight} lbs</h6> 
                   </div>
                   <div className="col-6">
                     <h6 className="float-right">Catch Rate:</h6>
                   </div>
                   <div className="col-6">
-                    <h6 className="float-left">{this.state.catchRate}%</h6> {/* Capture */}
+                    <h6 className="float-left">{this.state.catchRate}%</h6> 
                   </div>
                   <div className="col-6">
                     <h6 className="float-right">Gender Ratio:</h6>
@@ -405,7 +394,7 @@ export default class Pokemon extends Component {
                         aria-valuenow="15"
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* Barre progression male */}
+                      > 
                         <small>{this.state.genderRatioFemale}</small>
                       </div>
                       <div class="progress-bar" role="progressbar"
@@ -416,7 +405,7 @@ export default class Pokemon extends Component {
                         aria-valuenow="30"
                         aria-valuemin="0"
                         aria-valuemax="100"
-                      > {/* barre progression female */}
+                      > 
                         <small>{this.state.genderRatioMale}</small>
                       </div>
                     </div>
@@ -429,19 +418,19 @@ export default class Pokemon extends Component {
                     <h6 className="float-right">Egg Groups:</h6>
                   </div>
                   <div className="col-6">
-                    <h6 className="float-left">{this.state.eggGroups} </h6> {/* groupe d'oeuf */}
+                    <h6 className="float-left">{this.state.eggGroups} </h6> 
                   </div>
                   <div className="col-6">
                     <h6 className="float-right">Hatch Steps:</h6> 
                   </div>
                   <div className="col-6">
-                    <h6 className="float-left">{this.state.hatchSteps}</h6> {/* vitesse */}
+                    <h6 className="float-left">{this.state.hatchSteps}</h6> 
                   </div>
                   <div className="col-6">
                     <h6 className="float-right">Abilities:</h6>
                   </div>
                   <div className="col-6">
-                    <h6 className="float-left">{this.state.abilities}</h6> {/* capacité */}
+                    <h6 className="float-left">{this.state.abilities}</h6> 
                   </div>
                   <div className="col-6">
                     <h6 className="float-right">EVs:</h6>
